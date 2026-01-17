@@ -1,6 +1,7 @@
 // ================== 設定區 ==================
 const liffId = "2008908429-W2uPP3vx"; 
 const sheetUrl = "https://script.google.com/macros/s/AKfycbxMPVFWYI5MB533YO6IuL4MaOcgOrtpG4zNl33lsORv7mN5d8z1pQH4uMKYeOs68wFdiw/exec"; 
+const defaultAvatar = "default.png"; // 放在 GitHub Pages 的預設頭像
 // ===========================================
 
 let timeLeft = 120;
@@ -33,13 +34,15 @@ async function loadParticipants() {
 
       // 顯示頭像 + 名字
       const img = document.createElement("img");
-      img.src = p.avatar || "default.png"; // 如果沒有頭像顯示預設
+      img.src = p.avatar || defaultAvatar; // 預設頭像
+      img.onerror = () => { img.src = defaultAvatar; }; // 如果載入失敗換成預設
       div.appendChild(img);
 
       const span = document.createElement("span");
       span.textContent = p.name;
       div.appendChild(span);
 
+      // 隨機位置
       const x = Math.random() * (container.offsetWidth - 60);
       const y = Math.random() * (container.offsetHeight - 40);
       div.style.left = x + "px";
@@ -60,7 +63,7 @@ async function joinGame() {
     const payload = {
       userId: profile.userId,
       name: profile.displayName,
-      avatar: profile.pictureUrl || "",
+      avatar: profile.pictureUrl || defaultAvatar, // 確保有頭像
       answer: "" // 尚未選答案
     };
 
@@ -81,7 +84,7 @@ async function submitAnswer(answer, btn) {
     const payload = { 
       userId: profile.userId, 
       name: profile.displayName, 
-      avatar: profile.pictureUrl || "",
+      avatar: profile.pictureUrl || defaultAvatar,
       answer 
     };
 
