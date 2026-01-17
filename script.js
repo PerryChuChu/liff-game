@@ -35,7 +35,7 @@
   </style>
 </head>
 <body>
-  <h2>尾牙互動遊戲</h2>
+  <h2>今年尾牙最大獎："現金" "旅遊" "神秘禮"</h2>
 
   <!-- 名單顯示區 -->
   <div id="participantContainer">載入中...</div>
@@ -49,8 +49,8 @@
   <script src="https://static.line-scdn.net/liff/edge/2.1/liff.js"></script>
   <script>
     // ================== 設定區 ==================
-    const liffId = "2008908429-W2uPP3vx"; // LIFF ID
-    const sheetUrl = "https://script.google.com/macros/s/AKfycby629YTe4g98WRQ7amXcyDK6EkJvufUC-q9NGRLEtuPaeBxolUy-21Ci_g-y92EhuHILg/exec"; // Apps Script /exec URL
+    const liffId = "2008908429-W2uPP3vx"; // LIFF App ID
+    const sheetUrl = "https://script.google.com/macros/s/AKfycbzt9wj3lG1qxShY774B-B__GQXNVpQ1nQY6c0XYIlWgYXlRiBOGI0zrSmzAyO6aoS6HqA/exec"; // Apps Script /exec URL
     // ===========================================
 
     // ----------------- 載入名單 -----------------
@@ -116,6 +116,8 @@
     // ----------------- LIFF 初始化 -----------------
     liff.init({ liffId }).then(() => { 
       loadParticipants(); // 初始化成功後載入名單
+    }).catch(err => {
+      console.error("LIFF 初始化失敗", err);
     });
   </script>
 </body>
