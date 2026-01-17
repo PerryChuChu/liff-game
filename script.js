@@ -38,13 +38,12 @@
 
   <script src="https://static.line-scdn.net/liff/edge/2.1/liff.js"></script>
   <script>
-    const liffId = "2008908429-W2uPP3vx";   // 你的 LIFF ID
-    const sheetUrl = "https://script.google.com/macros/s/AKfycbyaFGoJTYDmCzwMdle9vOMRwgdoAcj57cHzP8rIBRvY73X6kMiiz8ILXYRHznGlypvYGA/exec"; // 你 Apps Script /exec 網址
+    const liffId = "2008908429-W2uPP3vx";
+    const sheetUrl = "https://script.google.com/macros/s/AKfycbzt9wj3lG1qxShY774B-B__GQXNVpQ1nQY6c0XYIlWgYXlRiBOGI0zrSmzAyO6aoS6HqA/exec";
 
     async function loadParticipants() {
       try {
-        const res = await fetch(sheetUrl, {
-                     method: 'POST',body: JSON.stringify(payload)});
+        const res = await fetch(sheetUrl);
         const list = await res.json();
 
         const container = document.getElementById("participantContainer");
@@ -58,7 +57,6 @@
           div.className = "participantBox";
           div.textContent = p.name;
 
-          // 隨機位置
           const x = Math.random() * (containerWidth - 100);
           const y = Math.random() * (containerHeight - 50);
           div.style.left = x + "px";
@@ -84,7 +82,7 @@
           body: JSON.stringify(payload)
         });
         alert("已送出，請看大螢幕！");
-        loadParticipants(); // 送出後立即更新名單
+        loadParticipants();
       } catch (err) {
         console.error(err);
         alert("送出失敗，請稍後再試！");
