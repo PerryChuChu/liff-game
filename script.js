@@ -43,7 +43,8 @@
 
     async function loadParticipants() {
       try {
-        const res = await fetch(sheetUrl);
+        const res = await fetch(sheetUrl, {
+                     method: 'POST',body: JSON.stringify(payload)});
         const list = await res.json();
 
         const container = document.getElementById("participantContainer");
