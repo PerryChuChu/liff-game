@@ -39,7 +39,7 @@
   <script src="https://static.line-scdn.net/liff/edge/2.1/liff.js"></script>
   <script>
     const liffId = "2008908429-W2uPP3vx";   // 你的 LIFF ID
-    const sheetUrl = "https://script.google.com/macros/s/AKfycbxYxMQlw7UZfsmvgqxJkAgWBUtD8AiEuAAkM8DTK45uoxwSCrtchVdZKmBk4sPlh23gLg/exec"; // 你 Apps Script /exec 網址
+    const sheetUrl = "https://script.google.com/macros/s/AKfycbyaFGoJTYDmCzwMdle9vOMRwgdoAcj57cHzP8rIBRvY73X6kMiiz8ILXYRHznGlypvYGA/exec"; // 你 Apps Script /exec 網址
 
     async function loadParticipants() {
       try {
