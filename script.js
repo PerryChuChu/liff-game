@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html>
 <head>
   <meta charset="utf-8">
@@ -31,6 +31,15 @@
       margin-top: 20px; 
       padding: 10px 20px; 
       font-size: 16px; 
+      transition: 0.3s;
+      cursor: pointer;
+    }
+
+    /* 按鈕送出後變色 */
+    button.sent {
+      background-color: #ccc;
+      color: #666;
+      cursor: not-allowed;
     }
   </style>
 </head>
@@ -41,22 +50,21 @@
   <div id="participantContainer">載入中...</div>
 
   <!-- 答案按鈕 -->
-  <button onclick="submitAnswer('A')">答案 A</button>
-  <button onclick="submitAnswer('B')">答案 B</button>
-  <button onclick="submitAnswer('C')">答案 C</button>
+  <button id="btnA" onclick="submitAnswer('A', this)">答案 A</button>
+  <button id="btnB" onclick="submitAnswer('B', this)">答案 B</button>
+  <button id="btnC" onclick="submitAnswer('C', this)">答案 C</button>
 
   <!-- LIFF SDK -->
   <script src="https://static.line-scdn.net/liff/edge/2.1/liff.js"></script>
   <script>
     // ================== 設定區 ==================
     const liffId = "2008908429-W2uPP3vx"; // LIFF App ID
-    const sheetUrl = "https://script.google.com/macros/s/AKfycbzt9wj3lG1qxShY774B-B__GQXNVpQ1nQY6c0XYIlWgYXlRiBOGI0zrSmzAyO6aoS6HqA/exec"; // Apps Script /exec URL
+    const sheetUrl = "https://script.google.com/macros/s/AKfycbxMPVFWYI5MB533YO6IuL4MaOcgOrtpG4zNl33lsORv7mN5d8z1pQH4uMKYeOs68wFdiw/exec"; // Apps Script /exec URL
     // ===========================================
 
-    // ----------------- 載入名單 -----------------
+    // ----------------- 載入名單 (GET) -----------------
     async function loadParticipants() {
       try {
-        // GET 請求取得已加入的參加者名單
         const res = await fetch(sheetUrl);  
         const list = await res.json(); // 解析 JSON 資料
 
@@ -66,11 +74,10 @@
         const containerWidth = container.offsetWidth;
         const containerHeight = container.offsetHeight;
 
-        // 將每個參加者加上框框隨意排版
         list.forEach(p => {
           const div = document.createElement("div");
           div.className = "participantBox";
-          div.textContent = p.name; // 顯示暱稱
+          div.textContent = p.name;
 
           // 隨機位置
           const x = Math.random() * (containerWidth - 100);
@@ -86,30 +93,38 @@
       }
     }
 
-    // ----------------- 點按送資料 -----------------
-    async function submitAnswer(answer) {
+    // ----------------- 點按送資料 (POST) -----------------
+    async function submitAnswer(answer, btn) {
       try {
+        // 按鈕鎖定，避免重複送
+        btn.disabled = true;
+        btn.classList.add('sent');
+
         // 取得使用者 LINE Profile
         const profile = await liff.getProfile();
 
-        // 組成要送到 Google Sheet 的資料
         const payload = { 
           userId: profile.userId, 
           name: profile.displayName, 
           answer 
         };
 
-        // POST 請求送到 Apps Script
+        // POST 送到 Apps Script
         await fetch(sheetUrl, { 
           method: 'POST', 
-          body: JSON.stringify(payload) 
+          body: JSON.stringify(payload)
         });
 
         alert("已送出，請看大螢幕！");
-        loadParticipants(); // 送出後刷新名單
+
+        // 送出後刷新名單
+        loadParticipants();
       } catch (err) {
         console.error(err);
         alert("送出失敗，請稍後再試！");
+        // 失敗解鎖按鈕
+        btn.disabled = false;
+        btn.classList.remove('sent');
       }
     }
 
