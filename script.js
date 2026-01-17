@@ -3,7 +3,7 @@ const liffId = "2008908429-W2uPP3vx";
 const sheetUrl = "https://script.google.com/macros/s/AKfycbxMPVFWYI5MB533YO6IuL4MaOcgOrtpG4zNl33lsORv7mN5d8z1pQH4uMKYeOs68wFdiw/exec"; 
 // ===========================================
 
-let timeLeft = 120; // 倒數秒數
+let timeLeft = 120;
 const timerEl = document.getElementById("timer");
 
 // ----------------- 倒數計時器 -----------------
@@ -30,10 +30,18 @@ async function loadParticipants() {
     list.forEach(p => {
       const div = document.createElement("div");
       div.className = "participantBox";
-      div.textContent = p.name;
 
-      const x = Math.random() * (container.offsetWidth - 80);
-      const y = Math.random() * (container.offsetHeight - 30);
+      // 顯示頭像 + 名字
+      const img = document.createElement("img");
+      img.src = p.avatar || "default.png"; // 如果沒有頭像顯示預設
+      div.appendChild(img);
+
+      const span = document.createElement("span");
+      span.textContent = p.name;
+      div.appendChild(span);
+
+      const x = Math.random() * (container.offsetWidth - 60);
+      const y = Math.random() * (container.offsetHeight - 40);
       div.style.left = x + "px";
       div.style.top = y + "px";
 
@@ -42,6 +50,24 @@ async function loadParticipants() {
   } catch (err) {
     console.error(err);
     document.getElementById("redPacket").textContent = "名單載入失敗";
+  }
+}
+
+// ----------------- 一進頁面就加入名單 -----------------
+async function joinGame() {
+  try {
+    const profile = await liff.getProfile();
+    const payload = {
+      userId: profile.userId,
+      name: profile.displayName,
+      avatar: profile.pictureUrl || "",
+      answer: "" // 尚未選答案
+    };
+
+    await fetch(sheetUrl, { method: 'POST', body: JSON.stringify(payload) });
+    loadParticipants();
+  } catch (err) {
+    console.error(err);
   }
 }
 
@@ -55,14 +81,11 @@ async function submitAnswer(answer, btn) {
     const payload = { 
       userId: profile.userId, 
       name: profile.displayName, 
+      avatar: profile.pictureUrl || "",
       answer 
     };
 
-    await fetch(sheetUrl, { 
-      method: 'POST', 
-      body: JSON.stringify(payload)
-    });
-
+    await fetch(sheetUrl, { method: 'POST', body: JSON.stringify(payload) });
     alert("已送出，請看大螢幕！");
     loadParticipants();
   } catch (err) {
@@ -75,7 +98,7 @@ async function submitAnswer(answer, btn) {
 
 // ----------------- LIFF 初始化 -----------------
 liff.init({ liffId }).then(() => { 
-  loadParticipants();
+  joinGame(); // 一進頁面自動加入名單
 }).catch(err => {
   console.error("LIFF 初始化失敗", err);
 });
