@@ -1,28 +1,39 @@
 // ================== 設定區 ==================
-const liffId = "2008908429-W2uPP3vx"; // LIFF App ID
-const sheetUrl = "https://script.google.com/macros/s/AKfycbxMPVFWYI5MB533YO6IuL4MaOcgOrtpG4zNl33lsORv7mN5d8z1pQH4uMKYeOs68wFdiw/exec"; // Apps Script /exec URL
+const liffId = "2008908429-W2uPP3vx"; 
+const sheetUrl = "https://script.google.com/macros/s/AKfycbxMPVFWYI5MB533YO6IuL4MaOcgOrtpG4zNl33lsORv7mN5d8z1pQH4uMKYeOs68wFdiw/exec"; 
 // ===========================================
 
-// ----------------- 載入名單 (GET) -----------------
+let timeLeft = 120; // 倒數秒數
+const timerEl = document.getElementById("timer");
+
+// ----------------- 倒數計時器 -----------------
+const countdown = setInterval(() => {
+  if(timeLeft <= 0){
+    clearInterval(countdown);
+    alert("時間到！抽獎開始！");
+  } else {
+    timerEl.textContent = timeLeft;
+    timeLeft--;
+  }
+}, 1000);
+
+// ----------------- 載入名單 -----------------
 async function loadParticipants() {
   try {
-    const res = await fetch(sheetUrl);  
-    const list = await res.json(); // 解析 JSON 資料
+    const res = await fetch(sheetUrl);
+    const list = await res.json();
+    document.getElementById("playerCount").textContent = "人數: " + list.length;
 
-    const container = document.getElementById("participantContainer");
-    container.innerHTML = ""; // 清空容器
-
-    const containerWidth = container.offsetWidth;
-    const containerHeight = container.offsetHeight;
+    const container = document.getElementById("redPacket");
+    container.innerHTML = "";
 
     list.forEach(p => {
       const div = document.createElement("div");
       div.className = "participantBox";
       div.textContent = p.name;
 
-      // 隨機位置
-      const x = Math.random() * (containerWidth - 100);
-      const y = Math.random() * (containerHeight - 50);
+      const x = Math.random() * (container.offsetWidth - 80);
+      const y = Math.random() * (container.offsetHeight - 30);
       div.style.left = x + "px";
       div.style.top = y + "px";
 
@@ -30,40 +41,33 @@ async function loadParticipants() {
     });
   } catch (err) {
     console.error(err);
-    document.getElementById("participantContainer").textContent = "載入名單失敗";
+    document.getElementById("redPacket").textContent = "名單載入失敗";
   }
 }
 
-// ----------------- 點按送資料 (POST) -----------------
+// ----------------- 點按送資料 -----------------
 async function submitAnswer(answer, btn) {
   try {
-    // 按鈕鎖定，避免重複送
     btn.disabled = true;
     btn.classList.add('sent');
 
-    // 取得使用者 LINE Profile
     const profile = await liff.getProfile();
-
     const payload = { 
       userId: profile.userId, 
       name: profile.displayName, 
       answer 
     };
 
-    // POST 送到 Apps Script
     await fetch(sheetUrl, { 
       method: 'POST', 
       body: JSON.stringify(payload)
     });
 
     alert("已送出，請看大螢幕！");
-
-    // 送出後刷新名單
     loadParticipants();
   } catch (err) {
     console.error(err);
     alert("送出失敗，請稍後再試！");
-    // 失敗解鎖按鈕
     btn.disabled = false;
     btn.classList.remove('sent');
   }
@@ -71,7 +75,7 @@ async function submitAnswer(answer, btn) {
 
 // ----------------- LIFF 初始化 -----------------
 liff.init({ liffId }).then(() => { 
-  loadParticipants(); // 初始化成功後載入名單
+  loadParticipants();
 }).catch(err => {
   console.error("LIFF 初始化失敗", err);
 });
