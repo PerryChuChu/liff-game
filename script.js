@@ -16,6 +16,6 @@ function send(answer) {
         answer
       })
     });
-    alert("已送出，請看大螢幕！");
+    alert("已送出，請看螢幕！");
   });
 }
