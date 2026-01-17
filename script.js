@@ -1,5 +1,5 @@
 const liffId = "2008908429-W2uPP3vx";
-const sheetUrl = "https://script.google.com/macros/s/AKfycbyaMZ2o039pFqzyYnVri8-zy_7Kj7VediEqXZb85AA-s6UfYDR3pgVeJYUrfkLqV4mF3Q/exec";
+const sheetUrl = "https://script.google.com/macros/s/AKfycbxQdH94ND_p6gkyH9ZhNm5zNaRG_iDM5wsRuJIiB8HYYgQW3tiSR3NSBSjkRRigMQO_uw/exec";
 
 
 liff.init({ liffId }).then(() => {
