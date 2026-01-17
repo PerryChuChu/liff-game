@@ -41,10 +41,11 @@
     const liffId = "2008908429-W2uPP3vx";
     const sheetUrl = "https://script.google.com/macros/s/AKfycbzt9wj3lG1qxShY774B-B__GQXNVpQ1nQY6c0XYIlWgYXlRiBOGI0zrSmzAyO6aoS6HqA/exec";
 
+    // 載入已加入的人名
     async function loadParticipants() {
       try {
-        const res = await fetch(sheetUrl);
-        const list = await res.json();
+        const res = await fetch(sheetUrl);  // GET
+        const list = await res.json();      // JSON 名單
 
         const container = document.getElementById("participantContainer");
         container.innerHTML = "";
@@ -66,9 +67,11 @@
         });
       } catch (err) {
         console.error(err);
+        document.getElementById("participantContainer").textContent = "載入名單失敗";
       }
     }
 
+    // 點按答案送資料
     async function submitAnswer(answer) {
       try {
         const profile = await liff.getProfile();
@@ -82,13 +85,14 @@
           body: JSON.stringify(payload)
         });
         alert("已送出，請看大螢幕！");
-        loadParticipants();
+        loadParticipants(); // 送出後刷新名單
       } catch (err) {
         console.error(err);
         alert("送出失敗，請稍後再試！");
       }
     }
 
+    // LIFF 初始化
     liff.init({ liffId }).then(() => {
       loadParticipants();
     });
