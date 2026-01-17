@@ -1,5 +1,6 @@
-const liffId = "先不要改";
-const sheetUrl = "先不要改";
+const liffId = "165xxxxxxxxx-xxxxxx";
+const sheetUrl = "https://script.google.com/macros/s/xxxx/exec";
+
 
 liff.init({ liffId }).then(() => {
   if (!liff.isLoggedIn()) liff.login();
